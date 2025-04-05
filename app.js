@@ -143,6 +143,18 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
 
 /**
+ * Temporary redirect all requests to ydftech.com to allow login.
+ * Only active if running on Azure deployment.
+ */
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    const targetBase = 'https://hackathon-starter-1.ydftech.com';
+    const redirectUrl = `${targetBase}${req.originalUrl}`;
+    return res.redirect(302, redirectUrl);
+  });
+}
+
+/**
  * Primary app routes.
  */
 app.get('/', homeController.index);
